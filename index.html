@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NCP Generator</title>
+  <style>
+    /* ====== Global Styles ====== */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1abc9c, #3498db);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 20px;
+      color: white;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+      font-size: 0.95rem;
+      color: #2c3e50;
+    }
+
+    textarea, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      resize: vertical;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      background: linear-gradient(90deg, #16a085, #2980b9);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      margin-top: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #1abc9c, #3498db);
+      transform: scale(1.02);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: linear-gradient(135deg, #16a085, #3498db);
+      color: white;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+
+    .output {
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Nursing Care Plan Generator</h1>
+  <div class="container">
+    <!-- Input Form -->
+    <form id="ncpForm">
+      <label>Cues (Assessment Data):</label>
+      <textarea id="cues" rows="3"></textarea>
+
+      <label>Nursing Diagnosis:</label>
+      <textarea id="diagnosis" rows="2"></textarea>
+
+      <label>Scientific Basis (optional):</label>
+      <textarea id="basis" rows="2"></textarea>
+
+      <label>Goal and Outcome Criteria (Short-term):</label>
+      <textarea id="goalShort" rows="2"></textarea>
+
+      <label>Goal and Outcome Criteria (Long-term):</label>
+      <textarea id="goalLong" rows="2"></textarea>
+
+      <label>Nursing Actions & Orders – Independent:</label>
+      <textarea id="independent" rows="2"></textarea>
+
+      <label>Nursing Actions & Orders – Dependent:</label>
+      <textarea id="dependent" rows="2"></textarea>
+
+      <label>Nursing Actions & Orders – Collaborative:</label>
+      <textarea id="collaborative" rows="2"></textarea>
+
+      <label>Rationale of Nursing Orders:</label>
+      <textarea id="rationale" rows="3"></textarea>
+
+      <label>Evaluation (Short-term):</label>
+      <textarea id="evalShort" rows="2"></textarea>
+
+      <label>Evaluation (Long-term):</label>
+      <textarea id="evalLong" rows="2"></textarea>
+
+      <button type="button" onclick="generateNCP()">Generate NCP</button>
+    </form>
+
+    <!-- Output -->
+    <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    function generateNCP() {
+      const cues = document.getElementById("cues").value;
+      const diagnosis = document.getElementById("diagnosis").value;
+      const basis = document.getElementById("basis").value;
+      const goalShort = document.getElementById("goalShort").value;
+      const goalLong = document.getElementById("goalLong").value;
+      const independent = document.getElementById("independent").value;
+      const dependent = document.getElementById("dependent").value;
+      const collaborative = document.getElementById("collaborative").value;
+      const rationale = document.getElementById("rationale").value;
+      const evalShort = document.getElementById("evalShort").value;
+      const evalLong = document.getElementById("evalLong").value;
+
+      let table = `
+        <table>
+          <tr><th>Cues</th><td>${cues}</td></tr>
+          <tr><th>Nursing Diagnosis</th><td>${diagnosis}</td></tr>
+          ${basis ? `<tr><th>Scientific Basis</th><td>${basis}</td></tr>` : ""}
+          <tr><th>Goals & Outcome Criteria (Short-term)</th><td>${goalShort}</td></tr>
+          <tr><th>Goals & Outcome Criteria (Long-term)</th><td>${goalLong}</td></tr>
+          <tr><th>Nursing Actions & Orders (Independent)</th><td>${independent}</td></tr>
+          <tr><th>Nursing Actions & Orders (Dependent)</th><td>${dependent}</td></tr>
+          <tr><th>Nursing Actions & Orders (Collaborative)</th><td>${collaborative}</td></tr>
+          <tr><th>Rationale of Nursing Orders</th><td>${rationale}</td></tr>
+          <tr><th>Evaluation (Short-term)</th><td>${evalShort}</td></tr>
+          <tr><th>Evaluation (Long-term)</th><td>${evalLong}</td></tr>
+        </table>
+      `;
+
+      document.getElementById("output").innerHTML = table;
+    }
+  </script>
+</body>
+</html>

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NCP Generator</title>
   <style>
-    /* ====== Global Styles ====== */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #1abc9c, #3498db);
@@ -13,24 +12,19 @@
       padding: 0;
       color: #333;
     }
-
     h1 {
       text-align: center;
       padding: 20px;
       color: white;
-      font-size: 2rem;
-      letter-spacing: 1px;
     }
-
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 20px auto;
       background: white;
       padding: 25px;
       border-radius: 15px;
       box-shadow: 0 6px 15px rgba(0,0,0,0.15);
     }
-
     label {
       font-weight: bold;
       margin-top: 15px;
@@ -38,8 +32,7 @@
       font-size: 0.95rem;
       color: #2c3e50;
     }
-
-    textarea, input {
+    textarea, select {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -48,7 +41,6 @@
       font-size: 0.95rem;
       resize: vertical;
     }
-
     button {
       display: block;
       width: 100%;
@@ -62,73 +54,71 @@
       cursor: pointer;
       transition: 0.3s;
     }
-
     button:hover {
       background: linear-gradient(90deg, #1abc9c, #3498db);
       transform: scale(1.02);
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 30px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
-
     th, td {
       border: 1px solid #ddd;
-      padding: 12px;
+      padding: 10px;
       text-align: left;
       vertical-align: top;
     }
-
     th {
       background: linear-gradient(135deg, #16a085, #3498db);
       color: white;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-      letter-spacing: 0.5px;
+      font-size: 0.85rem;
     }
-
     tr:nth-child(even) {
       background: #f8f9fa;
-    }
-
-    .output {
-      margin-top: 40px;
     }
   </style>
 </head>
 <body>
   <h1>Nursing Care Plan Generator</h1>
   <div class="container">
+    <!-- Template Selector -->
+    <label>Choose a Diagnosis Template (optional):</label>
+    <select id="template" onchange="loadTemplate()">
+      <option value="">-- Select a Template --</option>
+      <option value="pneumonia">Impaired Gas Exchange (Pneumonia)</option>
+      <option value="infection">Risk for Infection (Post-op)</option>
+      <option value="pain">Acute Pain</option>
+    </select>
+
     <!-- Input Form -->
     <form id="ncpForm">
-      <label>Cues (Assessment Data):</label>
-      <textarea id="cues" rows="3"></textarea>
+      <label>Cues:</label>
+      <textarea id="cues" rows="2"></textarea>
 
       <label>Nursing Diagnosis:</label>
       <textarea id="diagnosis" rows="2"></textarea>
 
-      <label>Scientific Basis (optional):</label>
+      <label>Scientific Basis:</label>
       <textarea id="basis" rows="2"></textarea>
 
-      <label>Goal and Outcome Criteria (Short-term):</label>
+      <label>Goal (Short-term):</label>
       <textarea id="goalShort" rows="2"></textarea>
 
-      <label>Goal and Outcome Criteria (Long-term):</label>
+      <label>Goal (Long-term):</label>
       <textarea id="goalLong" rows="2"></textarea>
 
-      <label>Nursing Actions & Orders – Independent:</label>
+      <label>Nursing Orders – Independent:</label>
       <textarea id="independent" rows="2"></textarea>
 
-      <label>Nursing Actions & Orders – Dependent:</label>
+      <label>Nursing Orders – Dependent:</label>
       <textarea id="dependent" rows="2"></textarea>
 
-      <label>Nursing Actions & Orders – Collaborative:</label>
+      <label>Nursing Orders – Collaborative:</label>
       <textarea id="collaborative" rows="2"></textarea>
 
-      <label>Rationale of Nursing Orders:</label>
+      <label>Rationale:</label>
       <textarea id="rationale" rows="3"></textarea>
 
       <label>Evaluation (Short-term):</label>
@@ -145,6 +135,58 @@
   </div>
 
   <script>
+    // Preloaded templates
+    const templates = {
+      pneumonia: {
+        cues: "Difficulty breathing, productive cough, fever",
+        diagnosis: "Impaired Gas Exchange related to accumulation of secretions in lungs",
+        basis: "Infection leads to inflammation, fluid accumulation, and impaired oxygenation.",
+        goalShort: "Patient will maintain oxygen saturation above 95% within 24 hours.",
+        goalLong: "Patient will demonstrate improved lung expansion and clear breath sounds in 1 week.",
+        independent: "Monitor respiratory rate, encourage deep breathing exercises, position in semi-Fowler’s.",
+        dependent: "Administer oxygen therapy as prescribed.",
+        collaborative: "Work with respiratory therapist for breathing treatments.",
+        rationale: "Improving oxygenation prevents hypoxemia and promotes recovery.",
+        evalShort: "After 24 hrs, O2 sat maintained at 96%, breathing easier.",
+        evalLong: "After 1 week, lungs clear to auscultation, patient reports improved tolerance to activity."
+      },
+      infection: {
+        cues: "Post-op wound with redness and mild drainage",
+        diagnosis: "Risk for Infection related to surgical incision",
+        basis: "Surgical wounds disrupt skin barrier, increasing risk of pathogen entry.",
+        goalShort: "Patient will remain afebrile within 48 hrs.",
+        goalLong: "Wound will heal without signs of infection in 2 weeks.",
+        independent: "Monitor wound site, teach hand hygiene.",
+        dependent: "Administer antibiotics as ordered.",
+        collaborative: "Coordinate with wound care nurse for dressing changes.",
+        rationale: "Early detection and prevention reduce risk of systemic infection.",
+        evalShort: "No fever noted after 48 hrs, wound site stable.",
+        evalLong: "Incision healed without infection after 2 weeks."
+      },
+      pain: {
+        cues: "Patient reports pain 8/10 post-surgery",
+        diagnosis: "Acute Pain related to surgical incision",
+        basis: "Tissue damage stimulates nociceptors leading to pain sensation.",
+        goalShort: "Pain level reduced to 4/10 within 1 hour after intervention.",
+        goalLong: "Patient will verbalize adequate pain control with ADLs in 1 week.",
+        independent: "Assess pain level regularly, provide comfort measures.",
+        dependent: "Administer analgesics as prescribed.",
+        collaborative: "Work with physiotherapy for mobility support.",
+        rationale: "Pain control promotes healing and mobility.",
+        evalShort: "Pain reduced to 3/10 after 1 hr.",
+        evalLong: "Patient ambulating with minimal discomfort after 1 week."
+      }
+    };
+
+    function loadTemplate() {
+      const selected = document.getElementById("template").value;
+      if (templates[selected]) {
+        Object.keys(templates[selected]).forEach(key => {
+          document.getElementById(key).value = templates[selected][key];
+        });
+      }
+    }
+
     function generateNCP() {
       const cues = document.getElementById("cues").value;
       const diagnosis = document.getElementById("diagnosis").value;
@@ -160,17 +202,32 @@
 
       let table = `
         <table>
-          <tr><th>Cues</th><td>${cues}</td></tr>
-          <tr><th>Nursing Diagnosis</th><td>${diagnosis}</td></tr>
-          ${basis ? `<tr><th>Scientific Basis</th><td>${basis}</td></tr>` : ""}
-          <tr><th>Goals & Outcome Criteria (Short-term)</th><td>${goalShort}</td></tr>
-          <tr><th>Goals & Outcome Criteria (Long-term)</th><td>${goalLong}</td></tr>
-          <tr><th>Nursing Actions & Orders (Independent)</th><td>${independent}</td></tr>
-          <tr><th>Nursing Actions & Orders (Dependent)</th><td>${dependent}</td></tr>
-          <tr><th>Nursing Actions & Orders (Collaborative)</th><td>${collaborative}</td></tr>
-          <tr><th>Rationale of Nursing Orders</th><td>${rationale}</td></tr>
-          <tr><th>Evaluation (Short-term)</th><td>${evalShort}</td></tr>
-          <tr><th>Evaluation (Long-term)</th><td>${evalLong}</td></tr>
+          <tr>
+            <th>Cues</th>
+            <th>Nursing Diagnosis</th>
+            <th>Scientific Basis</th>
+            <th>Goal (Short-term)</th>
+            <th>Goal (Long-term)</th>
+            <th>Independent Orders</th>
+            <th>Dependent Orders</th>
+            <th>Collaborative Orders</th>
+            <th>Rationale</th>
+            <th>Evaluation (Short-term)</th>
+            <th>Evaluation (Long-term)</th>
+          </tr>
+          <tr>
+            <td>${cues}</td>
+            <td>${diagnosis}</td>
+            <td>${basis}</td>
+            <td>${goalShort}</td>
+            <td>${goalLong}</td>
+            <td>${independent}</td>
+            <td>${dependent}</td>
+            <td>${collaborative}</td>
+            <td>${rationale}</td>
+            <td>${evalShort}</td>
+            <td>${evalLong}</td>
+          </tr>
         </table>
       `;
 
